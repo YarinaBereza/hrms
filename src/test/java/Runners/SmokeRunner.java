@@ -32,6 +32,8 @@ import org.junit.runner.RunWith;
 
         plugin = {"pretty", "html:target/cucumber.html", "json:target/cucumber.json", "rerun:target/failed.txt"}
 )
+
+//make changes to git
 public class SmokeRunner {
 
 
