@@ -9,6 +9,7 @@ import static io.restassured.RestAssured.*;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Assert;
+import utils.APICommonMethods;
 import utils.apiConstants;
 import utils.apiPayloadConstants;
 
@@ -26,9 +27,7 @@ public class APIWorkflowSteps {
 
     @Given("a request is prepared to create an employee")
     public void a_request_is_prepared_to_create_an_employee() {
-         request = given().header(apiConstants.Header_Content_type, apiConstants.Content_type)
-                .header(apiConstants.Header_Authorization, GenerateTokenSteps.token)
-         .body(apiPayloadConstants.createEmployeePayload());
+        APICommonMethods.createEmployeeRequest(apiPayloadConstants.createEmployeeBody());
     }
 
     @When("a POST call is made to create an employee")
@@ -80,27 +79,42 @@ public class APIWorkflowSteps {
         Assert.assertEquals(employee_id,tempEmpId);
     }
 
+
+
     @Then("the retrieved data at {string} matches the data used to create an employee with employee ID {string}")
-    public void the_retrieved_data_at_matches_the_data_used_to_create_an_employee_with_employee_id(String employeeObject, String responseEmployeeID, DataTable dataTable) {
-
-         List<Map<String,String>> expectedData = dataTable.asMaps();
-
-         Map<String, String> actualData = response.body().jsonPath().get(employeeObject);
+    public void the_retrieved_data_at_matches_the_data_used_to_create_an_employee_with_employee_id(
+            String employeeObject, String responseEmployeeID, DataTable dataTable) {
 
 
+        List<Map<String, String>> expectedData = dataTable.asMaps(String.class, String.class);
 
-         for(Map<String,String> map : expectedData){
+        Map<String, String> actualData = response.body().jsonPath().get(employeeObject);
 
-             Set<String> keys = map.keySet();
-             for(String key:keys){
-                String expectedValue =  map.get(key);
+        int index = 0;
+
+        for(Map<String, String> map : expectedData) {
+
+            Set<String> keys = map.keySet();
+            for(String key : keys) {
+
+                String expectedValue = map.get(key);
                 String actualValue = actualData.get(key);
 
-                Assert.assertEquals(expectedValue,actualValue);
-             }
+                Assert.assertEquals(expectedValue, actualValue);
 
-         }
-         String empID = response.body().jsonPath().getString(responseEmployeeID);
-         Assert.assertEquals(empID,employee_id);
+            }
+            index ++;
+        }
+        String empID = response.body().jsonPath().getString(responseEmployeeID);
+        Assert.assertEquals(empID, employee_id);
     }
-}
+
+
+    @Given("a request is prepared to create an employee with dynamic data {string}, {string}, {string}, {string}, {string}, {string}, {string}")
+    public void a_request_is_prepared_to_create_an_employee_with_dynamic_data(String firstName, String lastName, String middleName, String gender, String bDay, String employeeStatus, String employeeJobTitle) {
+        request = given().header(apiConstants.Header_Content_type, apiConstants.Content_type)
+                .header(apiConstants.Header_Authorization, GenerateTokenSteps.token)
+                .body(apiPayloadConstants.createEmployeeMoreDynamic(firstName, lastName, middleName, gender, bDay, employeeStatus, employeeJobTitle));
+    }
+    }
+
