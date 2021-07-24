@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "src/test/resources/features/Dashboard.feature", //all classes will be executed in feature package
+        features = "src/test/resources/features/AddEmployee.feature", //all classes will be executed in feature package
         //glue is where we can find implementation for gherkin steps
         //we provide the path of package steps
         glue = "steps",
@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
         //unimplemented steps
               //strict = true
 
-       tags = "@dashboardtabs",
+       tags = "@db",
         //tags will identify the scenarios based on the tags we will provide such as @smoke, @regression etc
         //we can add multiple tags in the runner class to execute scenarios belong to different tags
         //such as and or ,

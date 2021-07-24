@@ -3,11 +3,13 @@ package steps;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.Assert;
 import pages.AddEmployeePage;
 import pages.DashBoardPage;
 import utils.CommonMethods;
 import utils.Constants;
 import utils.ExcelReading;
+import utils.GlobalVariable;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +43,9 @@ public class AddEmployeeSteps extends CommonMethods {
         sendText(add.firstName,firstname);
         sendText(add.middleName,middlename);
         sendText(add.lastName,lastname);
+        GlobalVariable.firstName = firstname;
+        GlobalVariable.middleName = middlename;
+        GlobalVariable.lastName = lastname;
     }
 
     @When("user enters {string} {string} and {string} in the application")
@@ -104,5 +109,27 @@ public class AddEmployeeSteps extends CommonMethods {
             click(addEmployeePage.saveBtn);
         }
 
+    }
+
+    @When("capture the employeeId")
+    public void capture_the_employee_id() {
+        AddEmployeePage addEmployeePage = new AddEmployeePage();
+        GlobalVariable.empId = addEmployeePage.employeeId.getAttribute("value");
+    }
+
+
+    @Then("verify the data from frontend and backend")
+    public void verify_the_data_from_frontend_and_backend() {
+        System.out.println("Backend");
+        System.out.println("DBFirstName"+GlobalVariable.dbFirstName);
+        System.out.println("DBMiddleName"+GlobalVariable.dbMiddleName);
+        System.out.println("DBLastName"+GlobalVariable.dbLastName);
+        System.out.println("Frontend");
+        System.out.println("DBFirstName"+GlobalVariable.firstName);
+        System.out.println("DBMiddleName"+GlobalVariable.middleName);
+        System.out.println("DBLastName"+GlobalVariable.lastName);
+        Assert.assertEquals(GlobalVariable.firstName,GlobalVariable.dbFirstName);
+        Assert.assertEquals(GlobalVariable.middleName,GlobalVariable.dbMiddleName);
+        Assert.assertEquals(GlobalVariable.lastName,GlobalVariable.dbLastName);
     }
 }

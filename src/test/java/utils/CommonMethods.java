@@ -8,6 +8,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -28,7 +29,15 @@ public class CommonMethods {
         switch (ConfigReader.getPropertyValue("browser")) {
             case "chrome":
                 WebDriverManager.chromedriver().setup();
-                driver = new ChromeDriver();
+                if(ConfigReader.getPropertyValue("headles").equals(true)){
+                ChromeOptions chromeOptions = new ChromeOptions();
+                chromeOptions.setHeadless(true);
+                driver = new ChromeDriver(chromeOptions);
+            }else{
+              driver = new ChromeDriver();
+            }
+
+
                 break;
             case "firefox":
                 WebDriverManager.firefoxdriver().setup();
@@ -84,6 +93,12 @@ public class CommonMethods {
     public static void  click(WebElement element){
         waitForClickAbility(element);
         element.click();
+    }
+
+    public static void waitForVisibility(WebElement element){
+        getWait().until(ExpectedConditions.visibilityOf(element));
+
+
     }
 
 
